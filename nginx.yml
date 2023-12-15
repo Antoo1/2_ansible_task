@@ -1,43 +1,7 @@
 - name: NGINX | Install and configure NGINX
   hosts: nginx
   become: true
-  vars:
-    nginx_listen_port: 8080
-  
-  tasks:
-    - name: update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 86400
 
-    - name: Install nginx package from repo
-      apt:
-        name: nginx
-        state: latest
-      notify:
-        - restart nginx
-      tags:
-        - nginx-packeges
-        - packages
-    - name: NGINX | Create NGINX config file from template
-      template:
-        src: templates/nginx.conf.j2
-        dest: /tmp/nginx.conf
-      notify:
-        - reload nginx
-      tags:
-        - nginx-configuration
-
-
-  handlers:
-    - name: restart nginx
-      systemd:
-        name: nginx
-        state: restarted
-        enabled: yes
-    
-    - name: reload nginx
-      systemd:
-        name: nginx
-        state: reloaded
+  roles:
+    - install_nginx
 
