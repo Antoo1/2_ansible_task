@@ -3,14 +3,12 @@ MACHINES = {
   :"nginx" => {
               # VM box
               :box_name => "ubuntu/focal64",
+              # IP addr
+              :ip_addr => '192.168.56.150',
               # VM CPU count
-              :cpus => 2,
+              :cpus => 1,
               # VM RAM size (Mb)
-              :memory => 1024,
-              # networks
-              :net => [],
-              # forwarded ports
-              :forwarded_port => []
+              :memory => 200,
             }
 }
 
@@ -23,18 +21,9 @@ Vagrant.configure("2") do |config|
       # Set VM base box and hostname
       box.vm.box = boxconfig[:box_name]
       box.vm.host_name = boxname.to_s
-      # Additional network config if present
-      if boxconfig.key?(:net)
-        boxconfig[:net].each do |ipconf|
-          box.vm.network "private_network", ipconf
-        end
-      end
-      # Port-forward config if present
-      if boxconfig.key?(:forwarded_port)
-        boxconfig[:forwarded_port].each do |port|
-          box.vm.network "forwarded_port", port
-        end
-      end
+
+      box.vm.network "private_network", ip: boxconfig[:ip_addr]
+      
       # VM resources config
       box.vm.provider "virtualbox" do |v|
         # Set VM RAM size and CPU count
